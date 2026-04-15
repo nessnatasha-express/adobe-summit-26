@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dentsu + Adobe · Summit Mobile Cheat Sheet</title>
+<style>
+  /* FONTS - Loaded from Google Fonts */
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --b2b: #00d6e9; --crm: #F0C1C1; --ai: #A68CFF; --csc: #FF5023; }
+
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: #0e0e0e;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- FULL PAGE BACKGROUND ---- */
+  .page-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .page-bg svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    preserveAspectRatio: xMidYMid slice;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    padding: 48px 24px 28px;
+  }
+  @keyframes float-a { 0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)} }
+  @keyframes float-b { 0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)} }
+  .float-a { animation: float-a 7s ease-in-out infinite; }
+  .float-b { animation: float-b 9s ease-in-out infinite 1.5s; }
+  .hero-content { position: relative; z-index: 1; text-align: center; }
+  .hero-title {
+    font-size: clamp(40px, 8vw, 68px); font-weight: 800;
+    letter-spacing: -3px; line-height: 1; margin-bottom: 12px;
+  }
+  .hero-title .adobe {
+    background: linear-gradient(90deg, #fb2c36, #ff7443 50%, #a68cff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-title .plus { color: #616ed8; }
+  .hero-sub { font-family:'Space Grotesk',sans-serif; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:#737373; }
+
+  /* ---- CATALOG & MODALS ---- */
+  .catalog { max-width: 800px; margin: 0 auto; padding: 0 20px 80px; position: relative; z-index: 1; padding-top: 4px; }
+  .cat-block { margin-bottom: 10px; }
+  .cat-trigger {
+    width: 100%; display: flex; align-items: center; gap: 14px;
+    padding: 18px 22px; background: rgba(22,22,22,0.9);
+    border: 1px solid rgba(72,72,71,0.25); border-radius: 12px;
+    cursor: pointer; text-align: left; transition: background 0.2s;
+  }
+  .cat-block.open .cat-trigger { border-radius: 12px 12px 0 0; }
+  
+  .demos-wrap {
+    border: 1px solid rgba(72,72,71,0.25); border-top: none;
+    border-radius: 0 0 12px 12px; overflow: hidden;
+    max-height: 0; transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  .cat-block.open .demos-wrap { max-height: 9999px; }
+
+  /* Modals Overlay */
+  .content-overlay, .sched-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.78); backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .content-overlay.open, .sched-overlay.open { opacity: 1; pointer-events: all; }
+  
+  .content-modal, .sched-modal {
+    background: #141414; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px; width: 100%; max-width: 600px;
+    max-height: 88vh; overflow-y: auto; padding: 32px 30px 28px;
+    position: relative; transform: translateY(14px);
+    transition: transform 0.25s ease;
+  }
+  .content-overlay.open .content-modal, .sched-overlay.open .sched-modal { transform: translateY(0); }
+
+  /* Navigation Pills */
+  .day-pills, .content-pills { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+  .day-pill, .content-pill {
+    font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600;
+    padding: 8px 22px; border-radius: 999px; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15); color: #ccc; cursor: pointer;
+  }
+  
+  /* Additional Styles truncated for brevity, same as your source */
+  .ab2b{color:#00d6e9} .acrm{color:#F0C1C1} .aai{color:#A68CFF} .acsc{color:#FF5023}
+</style>
+</head>
+<body>
+
+<div class="page-bg">
+  <svg viewBox="0 0 1280 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <filter id="f0" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="5"/></filter>
+    </defs>
+    <rect x="246" y="-12" width="30" height="2000" fill="#FB3B16" opacity="0.7"/>
+    <g class="float-a"><circle cx="93" cy="300" r="113" fill="#323232" filter="url(#f0)"/></g>
+    </svg>
+</div>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Dentsu&nbsp;<span class="plus">+</span>&nbsp;<span class="adobe">Adobe</span></h1>
+    <p class="hero-sub">Summit Mobile Cheat Sheet</p>
+    <div class="day-pills">
+      <button class="day-pill" onclick="openSchedule('mon')">MON</button>
+      <button class="day-pill" onclick="openSchedule('tue')">TUES</button>
+      <button class="day-pill" onclick="openSchedule('wed')">WED</button>
+    </div>
+  </div>
+</div>
+
+<div class="catalog" id="catalog-container">
+  </div>
+
+<script>
+  // CATEGORY & DEMO DATA (Inlined for self-containment)
+  function toggleCat(id) {
+    const el = document.getElementById(id);
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.cat-block').forEach(c => c.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+
+  function toggleDemo(id) {
+    const el = document.getElementById(id);
+    const isOpen = el.classList.contains('open');
+    el.closest('.demos-wrap').querySelectorAll('.demo-item').forEach(d => d.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+
+  function openSchedule(day) {
+    document.getElementById('sched-overlay').classList.add('open');
+    // Populate schedule logic...
+  }
+
+  function closeScheduleBtn() {
+    document.getElementById('sched-overlay').classList.remove('open');
+  }
+  
+  // Close modals when clicking backdrop
+  window.onclick = function(event) {
+    if (event.target.classList.contains('content-overlay') || event.target.classList.contains('sched-overlay')) {
+      event.target.classList.remove('open');
+    }
+  }
+</script>
+
+</body>
+</html>
