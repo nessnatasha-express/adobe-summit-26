@@ -951,7 +951,51 @@ function renderDetailPage(catId, demoId) {
 function openForm() { document.getElementById('form-overlay').classList.add('open'); }
 function closeForm() { document.getElementById('form-overlay').classList.remove('open'); }
 function closeFormOutside(e) { if (e.target === document.getElementById('form-overlay')) closeForm(); }
-function submitForm() { alert("Thank you! We'll be in touch soon."); closeForm(); }
+async function submitForm() {
+  const SHEET_URL = "https://script.google.com/macros/s/AKfycbzIK8ialF3oA3fIUH8SxsUZ51494Wq7nsCHtx8TxnLEwWfADcTCu8ttAOBJRv76uCuK/exec";
+  const btn = document.querySelector('.submit-btn');
+  const originalText = btn.textContent;
+
+  const data = {
+    demo: document.getElementById('form-demo') ? document.getElementById('form-demo').value : document.querySelector('.form-select').value,
+    firstName: document.querySelectorAll('.form-input')[0].value,
+    lastName: document.querySelectorAll('.form-input')[1].value,
+    email: document.querySelectorAll('.form-input')[2].value,
+    title: document.querySelectorAll('.form-input')[3].value,
+    company: document.querySelectorAll('.form-input')[4].value,
+    notes: document.querySelector('.form-textarea').value
+  };
+
+  if (!data.firstName || !data.lastName || !data.email) {
+    alert('Please fill in your first name, last name, and email.');
+    return;
+  }
+
+  btn.textContent = 'Submitting...';
+  btn.disabled = true;
+
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    btn.textContent = '✓ Submitted!';
+    setTimeout(() => {
+      closeForm();
+      btn.textContent = originalText;
+      btn.disabled = false;
+      document.querySelectorAll('.form-input').forEach(i => i.value = '');
+      document.querySelector('.form-select').value = '';
+      document.querySelector('.form-textarea').value = '';
+    }, 1500);
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+}
 </script>
 </body>
 </html>
