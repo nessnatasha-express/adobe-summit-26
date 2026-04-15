@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dentsu + Adobe</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root { --accent: #00d6e9; --accent-dark: #000; }
+  body.theme-b2b  { --accent: #00d6e9; --accent-dark: #000; }
+  body.theme-crm  { --accent: #F0C1C1; --accent-dark: #1a0a0a; }
+  body.theme-ai   { --accent: #A68CFF; --accent-dark: #0e0820; }
+  body.theme-csc  { --accent: #FF5023; --accent-dark: #000; }
+
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: #0e0e0e;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- SIDE NAV ---- */
+  .side-nav {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 80px;
+    background: rgba(23,23,23,0.85);
+    border-right: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 36px 0;
+    gap: 28px;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    opacity: 0.45;
+    transition: opacity 0.2s;
+    background: none;
+    border: none;
+    color: #737373;
+  }
+  .nav-item:hover { opacity: 0.75; color: var(--accent); }
+  .nav-item.active { opacity: 1; color: var(--accent); }
+  .nav-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .nav-icon {
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ---- GLOBAL HEADER ---- */
+  .global-header {
+    position: fixed;
+    top: 0; right: 0;
+    z-index: 200;
+    padding: 20px 28px;
+  }
+  .req-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(38,38,38,0.6);
+    border: 1px solid rgba(72,72,71,0.3);
+    border-radius: 8px;
+    padding: 9px 16px;
+    cursor: pointer;
+    color: var(--accent);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    backdrop-filter: blur(6px);
+    transition: background 0.2s;
+  }
+  .req-btn:hover { background: rgba(48,48,48,0.7); }
+
+  /* ---- PAGES ---- */
+  .page { display: none; }
+  .page.active { display: block; }
+  .main-content { margin-left: 80px; min-height: 100vh; }
+
+  /* ---- HOME PAGE ---- */
+  .home-page {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    background: #0e0e0e;
+  }
+  .home-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+  .home-bg svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    preserveAspectRatio: xMidYMid slice;
+  }
+  @keyframes float-a { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-18px); } }
+  @keyframes float-b { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
+  @keyframes float-c { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-22px); } }
+  @keyframes float-d { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+  @keyframes float-e { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-16px); } }
+  .float-a { animation: float-a 7s ease-in-out infinite; }
+  .float-b { animation: float-b 9s ease-in-out infinite 1.5s; }
+  .float-c { animation: float-c 6s ease-in-out infinite 0.8s; }
+  .float-d { animation: float-d 11s ease-in-out infinite 2.2s; }
+  .float-e { animation: float-e 8s ease-in-out infinite 3s; }
+
+  .home-center {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 100px 40px 80px;
+  }
+  .home-title {
+    font-size: 72px;
+    font-weight: 800;
+    letter-spacing: -3px;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .home-title .adobe {
+    background: linear-gradient(90deg, #fb2c36, #ff7443 50%, #a68cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .home-title .plus { color: #616ed8; }
+  .category-tiles {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .cat-tile {
+    background: rgba(38,38,38,0.5);
+    border: 1px solid rgba(72,72,71,0.2);
+    border-radius: 16px;
+    height: 110px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .cat-tile:hover { background: rgba(55,55,55,0.6); transform: scale(1.015); }
+  .cat-tile-text { flex: 1; margin-left: 24px; }
+  .cat-tile-name { font-size: 24px; font-weight: 700; color: #fff; line-height: 1.3; }
+  .cat-tile-sub { font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #adaaaa; margin-top: 5px; }
+  .cat-tile-arrow { opacity: 0.35; transition: opacity 0.2s; font-size: 18px; }
+  .cat-tile:hover .cat-tile-arrow { opacity: 1; }
+  .cat-icon { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* ---- CATEGORY PAGE ---- */
+  .cat-page { padding: 72px 120px 64px; background: #0e0e0e; min-height: 100vh; }
+  .back-btn {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase; font-weight: 500;
+    color: #fff; cursor: pointer; background: none; border: none;
+    margin-bottom: 32px; transition: color 0.2s;
+  }
+  .back-btn:hover { color: var(--accent); }
+  .cat-page-title { font-size: 56px; font-weight: 800; letter-spacing: -2.5px; line-height: 1; margin-bottom: 48px; }
+  .hero-card {
+    border-radius: 16px; padding: 36px;
+    position: relative; overflow: hidden;
+    cursor: pointer; transition: transform 0.2s;
+    margin-bottom: 36px;
+    border: 1px solid rgba(72,72,71,0.15);
+  }
+  .hero-card:hover { transform: scale(1.008); }
+  .hero-card-bg {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 60%;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 0 16px 16px 0;
+    opacity: 0.85;
+  }
+  .hero-card-bg svg {
+    position: absolute;
+    right: -40px; top: -30px;
+    width: 110%; height: 130%;
+  }
+  @keyframes hero-float-a { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-14px); } }
+  @keyframes hero-float-b { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+  @keyframes hero-float-c { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-18px); } }
+  .hfa { animation: hero-float-a 8s ease-in-out infinite; }
+  .hfb { animation: hero-float-b 11s ease-in-out infinite 2s; }
+  .hfc { animation: hero-float-c 7s ease-in-out infinite 1s; }
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--accent); color: var(--accent-dark);
+    padding: 4px 12px; border-radius: 999px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-dark); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero-title { font-size: 34px; font-weight: 700; line-height: 1.15; margin-bottom: 14px; }
+  .hero-desc { font-size: 15px; color: #adaaaa; line-height: 1.7; max-width: 580px; margin-bottom: 24px; }
+  .init-btn {
+    background: var(--accent); color: var(--accent-dark);
+    padding: 12px 32px; border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600;
+    border: none; cursor: pointer; transition: background 0.2s, opacity 0.2s;
+  }
+  .init-btn:hover { opacity: 0.85; }
+  .demos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .demo-card {
+    background: rgba(38,38,38,0.4);
+    border: 1px solid rgba(72,72,71,0.15);
+    border-radius: 16px; padding: 24px;
+    cursor: pointer; transition: background 0.2s, transform 0.15s;
+  }
+  .demo-card:hover { background: rgba(55,55,55,0.55); transform: scale(1.02); }
+  .demo-card-title { font-size: 19px; font-weight: 700; line-height: 1.35; margin-bottom: 10px; }
+  .demo-card-desc { font-size: 13px; color: #adaaaa; line-height: 1.65; margin-bottom: 16px; }
+  .launch-link {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--accent); font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px; font-weight: 500;
+  }
+
+  /* ---- DEMO DETAIL PAGE ---- */
+  .detail-page { padding: 72px 120px 64px; background: #0e0e0e; min-height: 100vh; }
+  .breadcrumb { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+  .breadcrumb-btn {
+    display: flex; align-items: center; gap: 7px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase; font-weight: 500;
+    color: #fff; cursor: pointer; background: none; border: none; transition: color 0.2s;
+  }
+  .breadcrumb-btn:hover { color: var(--accent); }
+  .breadcrumb-sep { background: rgba(255,255,255,0.25); height: 1px; width: 40px; }
+  .breadcrumb-cat { font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; font-weight: 500; color: #fff; }
+  .detail-title { font-size: 64px; font-weight: 800; letter-spacing: -3px; line-height: 1; margin-bottom: 20px; }
+  .detail-desc { font-size: 18px; color: #adaaaa; line-height: 1.75; max-width: 640px; margin-bottom: 48px; }
+  .video-wrap {
+    aspect-ratio: 16/9;
+    background: #131313;
+    border: 1px solid rgba(72,72,71,0.1);
+    border-radius: 12px; overflow: hidden; margin-bottom: 48px;
+    box-shadow: 0 0 40px -10px rgba(129,236,255,0.12);
+  }
+  .video-wrap iframe { width: 100%; height: 100%; border: none; }
+  .powered-label { font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #adaaaa; margin-bottom: 16px; }
+  .tech-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+  .demo-context { margin-top: 48px; margin-bottom: 32px; padding: 20px 24px; background: rgba(38,38,38,0.4); border: 1px solid rgba(72,72,71,0.15); border-radius: 12px; border-left: 3px solid var(--accent); }
+  .demo-context-text { font-size: 15px; color: #c8c6c6; line-height: 1.75; }
+  .demo-context-text em { color: var(--accent); font-style: normal; font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; display: block; margin-bottom: 8px; }
+  .takeaways-section { margin-top: 0; }
+  .takeaways-label { font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #adaaaa; margin-bottom: 20px; }
+  .takeaways-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 40px; }
+  .takeaway-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(72,72,71,0.15); }
+  .takeaway-bullet { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 7px; }
+  .takeaway-text { font-size: 13px; color: #d0cece; line-height: 1.65; }
+  .takeaway-text strong { color: #fff; font-weight: 700; }
+  .tech-tag {
+    background: #131313; border: 1px solid rgba(72,72,71,0.2);
+    border-radius: 999px; padding: 10px 20px;
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 500;
+    color: #fff;
+  }
+  .tech-tag.adobe { border: 1px solid rgba(235,50,35,0.55); color: #fff; }
+
+  /* ---- FORM OVERLAY ---- */
+  .form-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(12px);
+    display: none; justify-content: flex-end;
+  }
+  .form-overlay.open { display: flex; }
+  .form-panel {
+    width: 520px; max-width: 100%;
+    background: #1e1e1e; border-left: 1px solid #111;
+    overflow-y: auto; padding: 32px;
+    display: flex; flex-direction: column; gap: 20px;
+    animation: slideIn 0.3s cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  .form-close { align-self: flex-end; background: none; border: none; color: #fff; cursor: pointer; opacity: 0.6; transition: opacity 0.2s; font-size: 20px; }
+  .form-close:hover { opacity: 1; }
+  .form-headline { font-size: 44px; font-weight: 800; letter-spacing: -2px; line-height: 1.1; }
+  .form-headline span { background: linear-gradient(90deg, #22d3ee, #a68cff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .form-sub { font-size: 14px; color: #b4b9c3; line-height: 1.6; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-row { display: flex; gap: 16px; }
+  .form-row .form-group { flex: 1; }
+  .form-label { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 600; color: #fff; letter-spacing: 0.5px; }
+  .form-input, .form-select, .form-textarea {
+    background: #141414; border: 1px solid #222; border-radius: 10px;
+    padding: 11px 14px; color: #fff; font-family: 'Manrope', sans-serif; font-size: 14px;
+    outline: none; transition: border-color 0.2s; width: 100%;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-input::placeholder, .form-textarea::placeholder { color: #555; }
+  .form-select option { background: #1e1e1e; }
+  .form-textarea { resize: none; }
+  .submit-btn {
+    width: 100%; background: var(--accent); color: var(--accent-dark);
+    border: none; border-radius: 10px; padding: 16px;
+    font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s; margin-top: 8px;
+  }
+  .submit-btn:hover { opacity: 0.85; }
+
+  /* ---- GRADIENT HELPERS ---- */
+  .grad-b2b { background: linear-gradient(135deg, rgba(176,249,118,0.12), rgba(0,214,233,0.08), rgba(0,0,0,0.5)); }
+  .grad-crm { background: linear-gradient(135deg, rgba(240,193,193,0.12), rgba(255,116,67,0.08), rgba(0,0,0,0.5)); }
+  .grad-ai  { background: linear-gradient(135deg, rgba(166,140,255,0.12), rgba(97,110,216,0.08), rgba(0,0,0,0.5)); }
+  .grad-csc { background: linear-gradient(135deg, rgba(255,116,67,0.12), rgba(251,44,54,0.08), rgba(0,0,0,0.5)); }
+  .text-b2b { background: linear-gradient(90deg, #b0f976, #76f981, #00d6e9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .text-crm { background: linear-gradient(90deg, #f0c1c1, #ff7443); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .text-ai  { background: linear-gradient(90deg, #a68cff, #616ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .text-csc { background: linear-gradient(90deg, #ff7443, #fb2c36); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+</style>
+</head>
+<body>
+
+<!-- SIDE NAV -->
+<nav class="side-nav">
+  <button class="nav-item active" onclick="showPage('home')" id="nav-home">
+    <div class="nav-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="9,22 9,12 15,12 15,22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <span class="nav-label">Base</span>
+  </button>
+  <button class="nav-item" onclick="showPage('cat','b2b-transformation')" id="nav-b2b-transformation">
+    <div class="nav-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="3" stroke="currentColor" stroke-width="2"/><circle cx="5" cy="19" r="3" stroke="currentColor" stroke-width="2"/><circle cx="19" cy="19" r="3" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="5" y2="16" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="19" y2="16" stroke="currentColor" stroke-width="2"/></svg>
+    </div>
+    <span class="nav-label">B2B</span>
+  </button>
+  <button class="nav-item" onclick="showPage('cat','modern-crm')" id="nav-modern-crm">
+    <div class="nav-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </div>
+    <span class="nav-label">CRM</span>
+  </button>
+  <button class="nav-item" onclick="showPage('cat','ai-for-cx')" id="nav-ai-for-cx">
+    <div class="nav-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2a4 4 0 014 4v1h1a3 3 0 010 6h-1v1a4 4 0 01-8 0v-1H7a3 3 0 010-6h1V6a4 4 0 014-4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/></svg>
+    </div>
+    <span class="nav-label">AI</span>
+  </button>
+  <button class="nav-item" onclick="showPage('cat','content-supply-chain')" id="nav-content-supply-chain">
+    <div class="nav-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="2"/><rect x="16" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="2"/><rect x="9" y="15" width="6" height="6" rx="1" stroke="currentColor" stroke-width="2"/><path d="M5 9v3h14V9M12 12v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </div>
+    <span class="nav-label">CSC</span>
+  </button>
+</nav>
+
+<!-- GLOBAL HEADER -->
+<div class="global-header">
+  <button class="req-btn" onclick="openForm()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" stroke-width="2"/><polygon points="22,2 15,22 11,13 2,9" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+    Request Information
+  </button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+  <!-- HOME PAGE -->
+  <div id="page-home" class="page active">
+    <div class="home-page">
+      <div class="home-bg">
+        <svg viewBox="0 0 1280 806" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <filter id="f0" x="-20" y="496.564" width="225.792" height="227.776" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="1.98447"/><feGaussianBlur stdDeviation="4.96117"/><feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="effect1_innerShadow"/></filter>
+            <filter id="f1" x="148.188" y="446.749" width="23.2831" height="25.2676" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="1.98447"/><feGaussianBlur stdDeviation="4.96117"/><feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.441387 0 0 0 0 0.441387 0 0 0 0 0.441387 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="effect1_innerShadow"/></filter>
+            <filter id="f2" x="231.959" y="559.515" width="41.6929" height="43.6774" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="1.98447"/><feGaussianBlur stdDeviation="4.96117"/><feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="effect1_innerShadow"/></filter>
+            <filter id="f3" x="313.179" y="764.19" width="62.8101" height="64.7946" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="1.98447"/><feGaussianBlur stdDeviation="4.96117"/><feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="effect1_innerShadow"/></filter>
+            <filter id="f4" x="134.76" y="229.08" width="194.928" height="196.912" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="1.98447"/><feGaussianBlur stdDeviation="4.96117"/><feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="effect1_innerShadow"/></filter>
+            <filter id="f5" x="297.246" y="164.572" width="25.7751" height="27.7596" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="1.98447"/><feGaussianBlur stdDeviation="4.96117"/><feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="effect1_innerShadow"/></filter>
+            <filter id="f6" x="1101" y="255" width="300.456" height="303.338" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="2.88207"/><feGaussianBlur stdDeviation="7.20517"/><feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="effect1_innerShadow"/></filter>
+            <filter id="f7" x="1076.15" y="178.726" width="55.4798" height="58.3619" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="2.88207"/><feGaussianBlur stdDeviation="7.20517"/><feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="effect1_innerShadow"/></filter>
+            <filter id="f8" x="1061.91" y="692.906" width="34.8651" height="37.7471" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="2.88207"/><feGaussianBlur stdDeviation="7.20517"/><feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="effect1_innerShadow"/></filter>
+            <clipPath id="bgclip"><rect width="1280" height="806" fill="white"/></clipPath>
+          </defs>
+          <g clip-path="url(#bgclip)">
+            <!-- Static lines/rects - left side -->
+            <rect x="245.865" y="-12" width="30.4175" height="825.863" fill="#FB3B16"/>
+            <rect x="-8.59726" y="-243.32" width="28.6977" height="1250.45" transform="rotate(-8.95243 -8.59726 -243.32)" fill="#F0C1C1"/>
+            <rect x="225.124" y="271.652" width="9.89819" height="542.198" transform="rotate(2.01191 225.124 271.652)" fill="#10D4E7"/>
+            <line x1="310.133" y1="177.992" x2="39.3612" y2="-44.2327" stroke="#00D6E9" stroke-width="1.98447"/>
+            <rect x="253.077" y="580.8" width="4.80944" height="237.178" transform="rotate(-21.8753 253.077 580.8)" fill="#B0F976"/>
+            <rect x="229.25" y="-20" width="4.80944" height="237.178" transform="rotate(45 229.25 -20)" fill="#616ED8"/>
+            <!-- Static lines/rects - right side -->
+            <rect x="1230.96" y="-200.689" width="30.0943" height="1058" transform="rotate(7.98466 1230.96 -200.689)" fill="#616ED8"/>
+            <rect x="1103.53" y="205.883" width="6.39982" height="315.608" transform="rotate(158.125 1103.53 205.883)" fill="#B0F976"/>
+            <line x1="160.34" y1="458.758" x2="63.1385" y2="857.765" stroke="#616ED8" stroke-width="6.46047"/>
+            <line x1="1073.06" y1="704.604" x2="1433.37" y2="1000.31" stroke="#00D6E9" stroke-width="6"/>
+            <!-- Animated circles - each in own group with class -->
+            <g class="float-a"><g filter="url(#f0)"><circle cx="92.8958" cy="609.459" r="112.896" fill="#323232"/></g></g>
+            <g class="float-b"><g filter="url(#f1)"><circle cx="159.83" cy="458.39" r="11.6415" fill="#323232"/></g></g>
+            <g class="float-c"><g filter="url(#f2)"><circle cx="252.805" cy="580.362" r="20.8465" fill="#323232"/></g></g>
+            <g class="float-d"><g filter="url(#f3)"><circle cx="344.585" cy="795.595" r="31.4051" fill="#323232"/></g></g>
+            <g class="float-e"><g filter="url(#f4)"><circle cx="232.224" cy="326.544" r="97.464" fill="#323232"/></g></g>
+            <g class="float-b"><g filter="url(#f5)"><circle cx="310.134" cy="177.46" r="12.8847" transform="rotate(26.242 310.134 177.46)" fill="#323232"/></g></g>
+            <g class="float-a"><g filter="url(#f6)"><circle cx="1251.23" cy="405.228" r="150.228" transform="rotate(180 1251.23 405.228)" fill="#323232"/></g></g>
+            <g class="float-c"><g filter="url(#f7)"><circle cx="1103.89" cy="206.466" r="27.7399" transform="rotate(180 1103.89 206.466)" fill="#323232"/></g></g>
+            <g class="float-d"><g filter="url(#f8)"><circle cx="1079.34" cy="710.339" r="17.4286" transform="rotate(-153.758 1079.34 710.339)" fill="#323232"/></g></g>
+          </g>
+        </svg>
+      </div>
+      <div class="home-center">
+        <h1 class="home-title">Dentsu&nbsp;<span class="plus">+</span>&nbsp;<span class="adobe">Adobe</span></h1>
+        <div class="category-tiles">
+          <div class="cat-tile" onclick="showPage('cat','b2b-transformation')">
+            <div class="cat-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="3" stroke="#00E3FD" stroke-width="2"/><circle cx="5" cy="19" r="3" stroke="#00E3FD" stroke-width="2"/><circle cx="19" cy="19" r="3" stroke="#00E3FD" stroke-width="2"/><line x1="12" y1="8" x2="5" y2="16" stroke="#00E3FD" stroke-width="2"/><line x1="12" y1="8" x2="19" y2="16" stroke="#00E3FD" stroke-width="2"/></svg></div>
+            <div class="cat-tile-text"><div class="cat-tile-name">B2B Transformation</div><div class="cat-tile-sub">Growth · Account-Based Marketing · Buying Committee Engagement</div></div>
+            <div class="cat-tile-arrow" style="color:#00E3FD">›</div>
+          </div>
+          <div class="cat-tile" onclick="showPage('cat','modern-crm')">
+            <div class="cat-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="#F0C1C1" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="#F0C1C1" stroke-width="2"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="#F0C1C1" stroke-width="2"/></svg></div>
+            <div class="cat-tile-text"><div class="cat-tile-name">Modern CRM</div><div class="cat-tile-sub">Loyalty · Multi-Channel · Gamification · Identity Resolution</div></div>
+            <div class="cat-tile-arrow" style="color:#F0C1C1">›</div>
+          </div>
+          <div class="cat-tile" onclick="showPage('cat','ai-for-cx')">
+            <div class="cat-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 2a4 4 0 014 4v1h1a3 3 0 010 6h-1v1a4 4 0 01-8 0v-1H7a3 3 0 010-6h1V6a4 4 0 014-4z" stroke="#A68CFF" stroke-width="2"/><circle cx="9" cy="10" r="1" fill="#A68CFF"/><circle cx="15" cy="10" r="1" fill="#A68CFF"/></svg></div>
+            <div class="cat-tile-text"><div class="cat-tile-name">Enterprise AI for CX</div><div class="cat-tile-sub">Intelligence · Real-time · Agents · Orchestration</div></div>
+            <div class="cat-tile-arrow" style="color:#A68CFF">›</div>
+          </div>
+          <div class="cat-tile" onclick="showPage('cat','content-supply-chain')">
+            <div class="cat-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="6" height="6" rx="1" stroke="#FF7443" stroke-width="2"/><rect x="16" y="3" width="6" height="6" rx="1" stroke="#FF7443" stroke-width="2"/><rect x="9" y="15" width="6" height="6" rx="1" stroke="#FF7443" stroke-width="2"/><path d="M5 9v3h14V9M12 12v3" stroke="#FF7443" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="cat-tile-text"><div class="cat-tile-name">Content Supply Chain</div><div class="cat-tile-sub">Operations · Automation · Brand · GenStudio</div></div>
+            <div class="cat-tile-arrow" style="color:#FF7443">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORY PAGE (dynamic) -->
+  <div id="page-cat" class="page">
+    <div class="cat-page" id="cat-content"></div>
+  </div>
+
+  <!-- DEMO DETAIL PAGE (dynamic) -->
+  <div id="page-detail" class="page">
+    <div class="detail-page" id="detail-content"></div>
+  </div>
+
+</div>
+
+<!-- FORM OVERLAY -->
+<div class="form-overlay" id="form-overlay" onclick="closeFormOutside(event)">
+  <div class="form-panel">
+    <button class="form-close" onclick="closeForm()">✕</button>
+    <div class="form-headline">Interested in<br><span>Learning More?</span></div>
+    <p class="form-sub">We'll be in touch with more after the show.</p>
+    <div class="form-group">
+      <label class="form-label">Demo of Interest</label>
+      <select class="form-select" id="form-demo">
+        <option value="">Select a demo</option>
+        <optgroup label="B2B Transformation">
+          <option>Anonymous Intent Detection</option>
+          <option>Personalized Buying Group Engagement</option>
+          <option>Account-Based Selling</option>
+          <option>Post-Sale Expansion</option>
+        </optgroup>
+        <optgroup label="Modern CRM">
+          <option>Unified Customer Profile</option>
+          <option>From Campaigns to Conversations in AJO</option>
+          <option>Gamification &amp; Loyalty</option>
+          <option>Adaptive Intelligence &amp; Attribution</option>
+        </optgroup>
+        <optgroup label="Enterprise AI for CX">
+          <option>Experience Concierge</option>
+          <option>SchemaIQ for AEP</option>
+          <option>Agentic Data Diagnostics</option>
+          <option>Initiative Intelligence Orchestrator</option>
+        </optgroup>
+        <optgroup label="Content Supply Chain">
+          <option>GenStudio Dentsu+</option>
+          <option>AEM Migration Agent</option>
+          <option>Firefly Prompt Engineering</option>
+          <option>GenStudio Content Continuum</option>
+          <option>Brand Intelligence Agent</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">First Name</label><input class="form-input" placeholder="Jane" type="text"></div>
+      <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" placeholder="Doe" type="text"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" placeholder="jane.doe@company.com" type="email"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Title</label><input class="form-input" placeholder="Marketing Director" type="text"></div>
+      <div class="form-group"><label class="form-label">Company</label><input class="form-input" placeholder="Acme Corp" type="text"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" placeholder="Additional notes..." rows="3"></textarea></div>
+    <button class="submit-btn" onclick="submitForm()">Submit</button>
+  </div>
+</div>
+
+<script>
+const VIDEO_URL = "https://drive.google.com/file/d/1st5Vgg-d8P5uSX9rHw-2_SvIip5yyvdu/preview";
+
+const CATEGORIES = {
+  "b2b-transformation": {
+    title: "B2B Transformation", titleWord1: "B2B", titleRest: " Transformation",
+    gradient: "grad-b2b", textClass: "text-b2b",
+    demos: [
+      { id: "anonymous-intent-detection", title: "Anonymous Intent Detection", live: true,
+        desc: "Identifies and activates in-market accounts before they ever raise their hand, using behavioral signals to trigger personalized outreach in real time.",
+        videoUrl: "https://www.youtube.com/embed/zvlOj8vDriI",
+        techs: ["AEM Sites","Adobe Journey Optimizer B2B","Adobe Experience Platform (AEP)","Adobe Marketo","Merkury Tag","Custom AI Modeling","Firefly API"] },
+      { id: "personalized-buying-group", title: "Buying Group Engagement",
+        desc: "Orchestrates tailored content and timing across every member of a buying committee, closing the gap between awareness and pipeline.",
+        videoUrl: "https://www.youtube.com/embed/6NQVITE9zCA",
+        techs: ["Adobe Journey Optimizer B2B","Adobe Experience Platform (AEP)","Adobe Marketo","Merkury Tag","Custom AI Modeling","Firefly API","Salesforce CRM"] },
+      { id: "account-based-selling", title: "Account-Based Commerce",
+        desc: "Aligns marketing and sales around a shared account intelligence layer that surfaces the right signal to the right rep at the right moment.",
+        videoUrl: "https://www.youtube.com/embed/wG8jVJUmqWo",
+        techs: ["Adobe Journey Optimizer B2B","Adobe Experience Platform (AEP)","Adobe Marketo","Merkury Tag","Custom AI Modeling","Firefly API","Salesforce CRM","Marketo Sales Insight"] },
+      { id: "post-sale-expansion", title: "Post-Sale Expansion",
+        desc: "Turns customer data into expansion opportunity by detecting adoption gaps and triggering upsell journeys before churn signals emerge.",
+        techs: ["Adobe Journey Optimizer B2B","Adobe Experience Platform (AEP)","Adobe Marketo","Merkury Tag","Custom AI Modeling","Firefly API","Salesforce CRM","Marketo Sales Insight"] }
+    ]
+  },
+  "modern-crm": {
+    title: "Modern CRM", titleWord1: "Modern", titleRest: " CRM",
+    gradient: "grad-crm", textClass: "text-crm",
+    demos: [
+      { id: "demystify-cx-merkury", title: "Demystify CX with Merkury", live: true,
+        desc: "Bringing together Merkle's tag management across AEM Sites & Commerce to create personalized CX.",
+        videoUrl: "https://www.youtube.com/embed/JmyKnf8KxQE",
+        techs: ["Merkury Tag Manager","AEM Sites","AEM EDS","Adobe Journey Optimizer","Adobe Commerce","Adobe Experience Platform"] },
+      { id: "unified-customer-profile", title: "Unified Customer Profile",
+        desc: "Merges fragmented identity data into a single, real-time profile that powers every downstream personalization and decision.",
+        videoUrl: "https://www.youtube.com/embed/KUnTCAF_4Xw",
+        techs: ["Adobe Experience Platform","RTCDP","Adobe Journey Optimizer","Merkury Tag Manager","Custom AI Model"] },
+      { id: "campaigns-to-conversations", title: "From Campaigns to Conversations in AJO", hidden: true,
+        desc: "Replaces batch-and-blast logic with journey-driven messaging that responds to what customers actually do, not just who they are.",
+        techs: ["Adobe Journey Optimizer","Customer Journey Analytics","Adobe Firefly"] },
+      { id: "gamification-loyalty", title: "Gamification & Loyalty",
+        desc: "Embeds behavioral incentives directly into the CX from email to web to drive repeat engagement and deepen brand affinity. See how we do it with Burger King.",
+        videoUrl: "https://www.youtube.com/embed/XMziSXsDwoU",
+        techs: ["Merkury Loyalty+","Adobe Journey Optimizer","Custom AI Model","Adobe Captivate","Adobe Experience Platform"] },
+      { id: "adaptive-intelligence", title: "Adaptive Intelligence & Attribution", hidden: true,
+        desc: "Continuously optimizes spend and creative decisions by connecting real performance signals back to the moments that drove them.",
+        techs: ["Adobe Experience Platform","Customer Journey Analytics"] },
+      { id: "agentic-data-diagnostics", title: "Connected Customer Experience",
+        desc: "Autonomously monitors AEP data quality, surfaces anomalies, and recommends fixes before bad data reaches downstream activation.",
+        videoUrl: "https://drive.google.com/file/d/1S9UJneXyNDK4gIOMD0TRjrWEL1_aA_H8/preview",
+        techs: ["Adobe Experience Platform","Snowflake","Databricks","Custom AI Model","Adobe App Builder"] }
+    ]
+  },
+  "ai-for-cx": {
+    title: "Enterprise AI for CX", titleWord1: "Enterprise", titleRest: " AI for CX",
+    gradient: "grad-ai", textClass: "text-ai",
+    demos: [
+      { id: "experience-concierge", title: "Experience Concierge", live: true,
+        desc: "Deploys an AI-orchestrated layer across digital touchpoints that personalizes every interaction in real time, without human intervention.",
+        techs: ["Brand Concierge","Custom AI Model","Adobe App Builder","AEM Assets","AEM Sites","Adobe Experience Platform","Merkury Tag Management"] },
+      { id: "aem-migration-agent", title: "AEM Migration Agent",
+        desc: "Automates the heavy lifting of AEM content migration, reducing manual effort and risk while preserving content structure and metadata integrity.",
+        videoUrl: "https://drive.google.com/file/d/1zPYf5OgbY6BxCyKV1RVMp292eTS5YaO0/preview",
+        techs: ["AEM Sites","AEM EDS","AEM Assets","Custom AI Models","Firefly API","Adobe App Builder","Workfront Workflow"] },
+      { id: "schemaiq-aep", title: "SchemaIQ for AEP",
+        desc: "Accelerates AEP data readiness by intelligently mapping, validating, and governing schemas so teams spend less time wrangling data and more time activating it.",
+        videoUrl: "https://www.youtube.com/embed/sPU7HC2jboc",
+        techs: ["Adobe Experience Platform","RTCDP","Custom AI Model","Adobe App Builder"] },
+      { id: "personalized-media-deployment", title: "Personalized Media Deployment",
+        desc: "See how Dentsu's connected stack unifies media planning, creative personalization, and campaign activation across Dentsu Connect, Clinch, and beyond.",
+        videoUrl: "https://drive.google.com/file/d/1D5idiGymeOtAwsgs5G5RnJ-Xuz_0czl7/preview",
+        techs: ["Dentsu Connect","Custom AI Model","Adobe Firefly","Adobe Experience Platform","Dentsu Audience Builder","Dentsu Strategy Builder","Clinch"] }
+    ]
+  },
+  "content-supply-chain": {
+    title: "Content Supply Chain", titleWord1: "Content", titleRest: " Supply Chain",
+    gradient: "grad-csc", textClass: "text-csc",
+    demos: [
+      { id: "genstudio-dentsu", title: "GenStudio Dentsu+", live: true,
+        desc: "A Dentsu-configured GenStudio environment with enterprise guardrails, custom templates, and accelerated approval workflows built for high-velocity marketing teams.",
+        videoUrl: "https://drive.google.com/file/d/1LBJlHz6cwPYqCD9DhMQtUx23s0rg5aNK/preview",
+        techs: ["GenStudio for Performance Marketing","AEM Assets","Adobe Firefly","Dentsu Connect","Workfront Workflow","Workfront Fusion"] },
+      { id: "genstudio-content-continuum", title: "GenStudio Content Continuum",
+        desc: "Connects content planning, production, and performance in a closed loop so every asset informs the next brief.",
+        videoUrl: "https://www.youtube.com/embed/j72fCFBC-XE",
+        techs: ["GenStudio for Performance Marketing","AEM Assets","Adobe Firefly","Adobe Express","Workfront Workflow","Adobe Journey Optimizer","Workfront Planning","Workfront Fusion"] },
+      { id: "brand-intelligence-agent", title: "Brand Intelligence Agent",
+        desc: "Monitors content output across channels and flags brand inconsistencies before they ship, keeping creative execution aligned to brand standards at scale.",
+        videoUrl: "https://drive.google.com/file/d/1a7u7ovfXltx7tY-rK5Phfx3katKCkufE/preview",
+        techs: ["Adobe Express","Adobe Journey Optimizer","Adobe App Builder","AEM Assets","Workfront","Creative Cloud","Adobe Firefly","Custom AI Modeling","GenStudio for Performance Marketing"] },
+      { id: "initiative-orchestrator", title: "Initiative Orchestrator",
+        desc: "Coordinates AI agents across campaign initiatives to ensure goals, budgets, and content stay aligned as conditions change.",
+        videoUrl: "https://www.youtube.com/embed/6iYuTOUmRLI",
+        techs: ["Workfront Planner","Workfront Workflow","Adobe Journey Optimizer","Workfront Fusion","Adobe Analytics","Figma","Adobe Firefly","Adobe Experience Platform"] }
+    ]
+  }
+};
+
+const ADOBE_TOOLS = ["AEM","GenStudio","Adobe","Firefly","Workfront","Creative Cloud","Express","Journey Optimizer","App Builder","Marketo","Experience Platform","RTCDP","Brand Concierge","Customer Journey Analytics"];
+function isAdobe(name) { return ADOBE_TOOLS.some(k => name.includes(k)); }
+
+const THEME_MAP = {
+  'home': 'theme-b2b',
+  'b2b-transformation': 'theme-b2b',
+  'modern-crm': 'theme-crm',
+  'ai-for-cx': 'theme-ai',
+  'content-supply-chain': 'theme-csc'
+};
+
+let currentCat = null;
+
+function setNavActive(id) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('nav-' + id);
+  if (el) el.classList.add('active');
+}
+
+function setTheme(id) {
+  document.body.classList.remove('theme-b2b','theme-crm','theme-ai','theme-csc');
+  document.body.classList.add(THEME_MAP[id] || 'theme-b2b');
+}
+
+function showPage(type, id, demoId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  if (type === 'home') {
+    document.getElementById('page-home').classList.add('active');
+    setNavActive('home');
+    setTheme('home');
+  } else if (type === 'cat') {
+    currentCat = id;
+    renderCategoryPage(id);
+    document.getElementById('page-cat').classList.add('active');
+    setNavActive(id);
+    setTheme(id);
+    window.scrollTo(0,0);
+  } else if (type === 'detail') {
+    currentCat = id;
+    renderDetailPage(id, demoId);
+    document.getElementById('page-detail').classList.add('active');
+    setNavActive(id);
+    setTheme(id);
+    window.scrollTo(0,0);
+  }
+}
+
+const HERO_BGS = {
+'b2b-transformation': `<svg viewBox="0 0 802 438" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><filter id="hb2b_f1" x="573.15" y="-79.05" width="244.69" height="246.84" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hb2b_f2" x="701.9" y="208.7" width="25.23" height="27.38" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.441 0 0 0 0 0.441 0 0 0 0 0.441 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hb2b_f3" x="538.6" y="134.6" width="45.18" height="47.33" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hb2b_f4" x="324.4" y="-29.05" width="68.07" height="70.22" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hb2b_f5" x="612.4" y="278.6" width="211.24" height="213.39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter></defs><g opacity="0.6"><g class="hfc"><g filter="url(#hb2b_f1)"><circle cx="695.494" cy="43.29" r="122.324" transform="rotate(150 695.494 43.29)" fill="#323232"/></g></g><line x1="713.862" y1="221.274" x2="607.098" y2="-129.855" stroke="#22D3EE" stroke-width="7"/><g class="hfb"><g filter="url(#hb2b_f2)"><circle cx="714.529" cy="221.308" r="12.6137" transform="rotate(150 714.529 221.308)" fill="#323232"/></g></g><rect x="560.714" y="156.962" width="5.21" height="256.986" transform="rotate(128.125 560.714 156.962)" fill="#22D3EE"/><g class="hfa"><g filter="url(#hb2b_f3)"><circle cx="561.208" cy="157.225" r="22.5874" transform="rotate(150 561.208 157.225)" fill="#323232"/></g></g><g class="hfb"><g filter="url(#hb2b_f4)"><circle cx="358.482" cy="4.984" r="34.0278" transform="rotate(150 358.482 4.984)" fill="#323232"/></g></g><rect x="862.533" y="665.962" width="31.09" height="844.241" transform="rotate(150 862.533 665.962)" fill="#22D3EE" fill-opacity="0.1"/><rect x="1082.93" y="487.539" width="31.09" height="844.241" transform="rotate(141.048 1082.93 487.539)" fill="#B0F976"/><rect x="754.429" y="431.909" width="10.72" height="587.479" transform="rotate(152.012 754.429 431.909)" fill="#B0F976"/><g class="hfa"><g filter="url(#hb2b_f5)"><circle cx="718.029" cy="384.247" r="105.603" transform="rotate(150 718.029 384.247)" fill="#323232"/></g></g></g></svg>`,
+'modern-crm': `<svg viewBox="0 0 802 390" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><filter id="hcrm_f1" x="573.15" y="-79.05" width="244.69" height="246.84" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hcrm_f2" x="701.9" y="208.69" width="25.23" height="27.38" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.441 0 0 0 0 0.441 0 0 0 0 0.441 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hcrm_f3" x="538.6" y="134.63" width="45.18" height="47.33" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hcrm_f4" x="324.44" y="-29.05" width="68.07" height="70.22" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hcrm_f5" x="612.4" y="278.63" width="211.24" height="213.39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter></defs><g opacity="0.6"><g class="hfc"><g filter="url(#hcrm_f1)"><circle cx="695.494" cy="43.2896" r="122.324" transform="rotate(150 695.494 43.2896)" fill="#323232"/></g></g><line x1="713.862" y1="221.274" x2="607.099" y2="-129.856" stroke="#F0C1C1" stroke-width="7"/><g class="hfb"><g filter="url(#hcrm_f2)"><circle cx="714.529" cy="221.307" r="12.6137" transform="rotate(150 714.529 221.307)" fill="#323232"/></g></g><rect x="560.715" y="156.961" width="5.21" height="256.986" transform="rotate(128.125 560.715 156.961)" fill="#F0C1C1"/><g class="hfa"><g filter="url(#hcrm_f3)"><circle cx="561.208" cy="157.225" r="22.5874" transform="rotate(150 561.208 157.225)" fill="#323232"/></g></g><g class="hfb"><g filter="url(#hcrm_f4)"><circle cx="358.483" cy="4.98334" r="34.0278" transform="rotate(150 358.483 4.98334)" fill="#323232"/></g></g><rect x="862.534" y="665.961" width="31.09" height="844.241" transform="rotate(150 862.534 665.961)" fill="#F0C1C1" fill-opacity="0.1"/><rect x="1082.93" y="487.539" width="31.09" height="844.241" transform="rotate(141.048 1082.93 487.539)" fill="#008488"/><rect x="754.43" y="431.908" width="10.72" height="587.479" transform="rotate(152.012 754.43 431.908)" fill="#008488"/><g class="hfa"><g filter="url(#hcrm_f5)"><circle cx="718.03" cy="384.247" r="105.603" transform="rotate(150 718.03 384.247)" fill="#323232"/></g></g></g></svg>`,
+'ai-for-cx': `<svg viewBox="0 0 802 390" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><filter id="haicx_f1" x="573.15" y="-79.05" width="244.69" height="246.84" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="haicx_f2" x="701.9" y="208.69" width="25.23" height="27.38" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.441 0 0 0 0 0.441 0 0 0 0 0.441 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="haicx_f3" x="538.6" y="134.63" width="45.18" height="47.33" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="haicx_f4" x="324.45" y="-29.05" width="68.07" height="70.22" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="haicx_f5" x="612.4" y="278.63" width="211.24" height="213.39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter></defs><g opacity="0.6"><g class="hfc"><g filter="url(#haicx_f1)"><circle cx="695.495" cy="43.2904" r="122.324" transform="rotate(150 695.495 43.2904)" fill="#323232"/></g></g><line x1="713.862" y1="221.274" x2="607.099" y2="-129.855" stroke="#22D3EE" stroke-width="7"/><g class="hfb"><g filter="url(#haicx_f2)"><circle cx="714.53" cy="221.308" r="12.6137" transform="rotate(150 714.53 221.308)" fill="#323232"/></g></g><rect x="560.715" y="156.962" width="5.21" height="256.986" transform="rotate(128.125 560.715 156.962)" fill="#A68CFF"/><g class="hfa"><g filter="url(#haicx_f3)"><circle cx="561.208" cy="157.226" r="22.5874" transform="rotate(150 561.208 157.226)" fill="#323232"/></g></g><g class="hfb"><g filter="url(#haicx_f4)"><circle cx="358.483" cy="4.98406" r="34.0278" transform="rotate(150 358.483 4.98406)" fill="#323232"/></g></g><rect x="862.534" y="665.962" width="31.09" height="844.241" transform="rotate(150 862.534 665.962)" fill="#A68CFF" fill-opacity="0.1"/><rect x="1082.93" y="487.539" width="31.09" height="844.241" transform="rotate(141.048 1082.93 487.539)" fill="#A68CFF"/><rect x="754.43" y="431.909" width="10.72" height="587.479" transform="rotate(152.012 754.43 431.909)" fill="#A68CFF"/><g class="hfa"><g filter="url(#haicx_f5)"><circle cx="718.03" cy="384.247" r="105.603" transform="rotate(150 718.03 384.247)" fill="#323232"/></g></g></g></svg>`,
+'content-supply-chain': `<svg viewBox="0 0 802 390" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><filter id="hcsc_f1" x="573.15" y="-79.05" width="244.69" height="246.84" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hcsc_f2" x="701.9" y="208.69" width="25.23" height="27.38" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.441 0 0 0 0 0.441 0 0 0 0 0.441 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hcsc_f3" x="538.6" y="134.63" width="45.18" height="47.33" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hcsc_f4" x="324.45" y="-29.05" width="68.07" height="70.22" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter><filter id="hcsc_f5" x="612.4" y="278.63" width="211.24" height="213.39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="ha"/><feOffset dy="2.15"/><feGaussianBlur stdDeviation="5.38"/><feComposite in2="ha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 0 0.317647 0 0 0 1 0"/><feBlend mode="normal" in2="shape" result="r"/></filter></defs><g opacity="0.6"><g class="hfc"><g filter="url(#hcsc_f1)"><circle cx="695.495" cy="43.2902" r="122.324" transform="rotate(150 695.495 43.2902)" fill="#323232"/></g></g><line x1="713.862" y1="221.274" x2="607.099" y2="-129.855" stroke="#22D3EE" stroke-width="7"/><g class="hfb"><g filter="url(#hcsc_f2)"><circle cx="714.53" cy="221.308" r="12.6137" transform="rotate(150 714.53 221.308)" fill="#323232"/></g></g><rect x="560.715" y="156.962" width="5.21" height="256.986" transform="rotate(128.125 560.715 156.962)" fill="#22D3EE"/><g class="hfa"><g filter="url(#hcsc_f3)"><circle cx="561.208" cy="157.226" r="22.5874" transform="rotate(150 561.208 157.226)" fill="#323232"/></g></g><g class="hfb"><g filter="url(#hcsc_f4)"><circle cx="358.483" cy="4.98394" r="34.0278" transform="rotate(150 358.483 4.98394)" fill="#323232"/></g></g><rect x="862.534" y="665.962" width="31.09" height="844.241" transform="rotate(150 862.534 665.962)" fill="#A68CFF" fill-opacity="0.1"/><rect x="1082.93" y="487.539" width="31.09" height="844.241" transform="rotate(141.048 1082.93 487.539)" fill="#FF5023"/><rect x="754.43" y="431.909" width="10.72" height="587.479" transform="rotate(152.012 754.43 431.909)" fill="#FF5023"/><g class="hfa"><g filter="url(#hcsc_f5)"><circle cx="718.03" cy="384.247" r="105.603" transform="rotate(150 718.03 384.247)" fill="#323232"/></g></g></g></svg>`
+};
+
+const DEMO_CONTEXT = {
+  "experience-concierge": { audience: "Retailers, B2C brands, or anyone running a digital storefront", blurb: "This demo shows what a fully AI-driven commerce experience looks like in practice — where the site adapts to each visitor in real time based on their behavior, not a segment or a rule." },
+  "demystify-cx-merkury": { audience: "Brands on AEM Sites or Adobe Commerce looking to activate anonymous traffic", blurb: "Most CX personalization requires a login. This demo shows how Merkury resolves identity before that happens, so brands can personalize for visitors they've never formally met." },
+  "schemaiq-aep": { audience: "Data engineers, architects, and AEP practitioners tired of tribal knowledge", blurb: "If your team spends more time explaining the data model than using it, this is for you. SchemaIQ maps, documents, and aligns AEP schemas automatically." },
+  "agentic-data-diagnostics": { audience: "AEP teams dealing with data quality issues that only show up after activation", blurb: "This demo shows an AI agent continuously monitoring your AEP data layer — flagging anomalies and recommending fixes before bad data reaches your audiences or campaigns." },
+  "initiative-intelligence": { audience: "Marketing operations and campaign managers running complex, multi-workstream programs", blurb: "When you're managing multiple campaigns across creative, media, and journey teams simultaneously, coordination breaks down fast. This demo shows what orchestration looks like when the tools are all connected." },
+  "personalized-media-deployment": { audience: "Media planners, performance marketers, and agencies managing full-funnel campaigns", blurb: "This demo walks through what it looks like when media strategy, creative personalization, and campaign activation all live inside one connected platform — from planning to delivery." },
+  "anonymous-intent-detection": { audience: "B2B marketers targeting accounts that haven't raised their hand yet", blurb: "This demo shows how to identify and activate in-market accounts before they ever fill out a form — using behavioral signals to trigger the right outreach at the right moment." },
+  "personalized-buying-group": { audience: "B2B marketers selling into complex, multi-stakeholder accounts", blurb: "Most ABM tools treat an account as one contact. This demo shows how to run separate, coordinated journeys for every member of a buying committee simultaneously." },
+  "account-based-selling": { audience: "B2B companies running both digital commerce and a direct sales motion", blurb: "This demo shows what it looks like when your Commerce storefront and your CRM are in sync — so the buyer gets a personalized experience and the rep knows exactly when to engage." },
+  "unified-customer-profile": { audience: "Brands with customer data spread across multiple systems, CDPs, or legacy platforms", blurb: "If your customer record lives in four places and none of them agree, this demo is the conversation starter. RT-CDP stitches those records into a single live profile and activates it immediately." },
+  "gamification-loyalty": { audience: "Consumer brands running loyalty programs or looking to increase repeat engagement", blurb: "This demo uses Burger King as a live reference for what personalized gamification looks like at scale — every challenge and reward tailored to the individual, not the segment." },
+  "campaigns-to-conversations": { audience: "CRM and lifecycle marketers ready to move beyond batch-and-blast", blurb: "This demo shows what Adobe Journey Optimizer actually does in practice — replacing scheduled sends with journeys that respond to what customers do in real time." },
+  "adaptive-intelligence": { audience: "Marketers and analysts who need attribution they can actually act on", blurb: "This demo connects performance data back to the exact moments that drove it — so spend and creative decisions update based on what's actually working, not last month's report." },
+  "genstudio-dentsu": { audience: "Agencies and in-house teams managing high-volume creative production and paid media", blurb: "This demo shows what GenStudio looks like inside a Dentsu-managed environment — where creative production, audience targeting, and campaign execution run as one coordinated system." },
+  "aem-migration-agent": { audience: "Brands facing an AEM migration or large-scale site re-platform", blurb: "This demo shows an AI agent walking a full site migration from start to deployment — including content enrichment, SEO optimization, and go-live tracking — without manual orchestration." },
+  "brand-intelligence-agent": { audience: "Marketing teams that re-enter brand settings into every new tool they onboard", blurb: "This demo shows what brand setup looks like when AI does it once and syncs it everywhere — from voice and palette extraction to live publishing across Adobe, Marketo, and Creative Cloud." },
+  "genstudio-content-continuum": { audience: "Content teams and creative ops leads managing multi-stage production workflows", blurb: "This demo shows the full content supply chain on one screen — from brief through production to performance — with Workfront Fusion eliminating every manual handoff in between." },
+  "initiative-orchestrator": { audience: "Marketing ops and program managers running multi-team campaign initiatives", blurb: "This demo shows how Workfront connects planning, creative, and activation into a single orchestrated workflow — so goals, budgets, and content stay aligned as things change." },
+  "post-sale-expansion": { audience: "B2B companies with a post-sale growth motion or customer success team", blurb: "This demo shows how to identify expansion opportunities automatically — using AI to detect adoption gaps and trigger upsell journeys before churn signals emerge." }
+};
+
+
+const TAKEAWAYS = {
+  "experience-concierge": [
+    { term: "No rules required", text: "Personalization at this level used to take months of segments and engineering — the AI concierge does it in real time for every visitor." },
+    { term: "No login needed", text: "The concierge surfaces the right products, offers, and content before any form fill or authentication." },
+    { term: "Live, not a prototype", text: "This is a working demo of what AI-generated CX looks like today — not a concept or a mockup." },
+    { term: "Dual-sided value", text: "The storefront serves both the consumer and the agent — every adaptation is driven by data, not assumptions." },
+    { term: "Dynamic by design", text: "Layout, content, product recommendations, and messaging all adapt in real time based on each visitor's intent signals." },
+    { term: "Flexible architecture", text: "The back-end can be scoped to a full Adobe stack or a partial one — AJO, AEM, and Brand Concierge all integrate modularly." }
+  ],
+  "demystify-cx-merkury": [
+    { term: "Anonymous ≠ invisible", text: "Merkury resolves intent and demographic signals before any login — unknown visitors are still actionable." },
+    { term: "AEP does the heavy lifting", text: "With Merkury feeding signals in, Adobe Target and AEP drive personalization at scale across every site visit." },
+    { term: "Tag-driven identity", text: "Merkury's tag management layer connects AEM Sites and Commerce into a single identity and activation framework." },
+    { term: "No rip-and-replace", text: "Merkury layers on top of existing infrastructure — brands don't need to rebuild to get identity resolution working." },
+    { term: "Commerce-aware", text: "Personalization extends into Adobe Commerce — product display, pricing, and recommendations all respond to resolved identity." },
+    { term: "AJO orchestration", text: "Downstream, Adobe Journey Optimizer picks up the identity signals and executes the right journey automatically." }
+  ],
+  "schemaiq-aep": [
+    { term: "Full data inventory", text: "SchemaIQ produces a complete, digestible inventory of everything in your AEP instance — schemas, datasets, and fields in one view." },
+    { term: "Auto data dictionary", text: "Field definitions, data types, and lineage are generated automatically — no manual documentation required." },
+    { term: "Schema alignment", text: "The tool identifies gaps and misalignments across schemas before they cause activation issues downstream." },
+    { term: "Faster onboarding", text: "New team members and partners can understand the data model in hours, not weeks." },
+    { term: "Governance ready", text: "SchemaIQ surfaces data quality issues and compliance gaps proactively, not after the fact." },
+    { term: "AEP acceleration", text: "Teams using SchemaIQ spend less time wrangling data and more time building audiences and activating campaigns." }
+  ],
+  "agentic-data-diagnostics": [
+    { term: "Autonomous monitoring", text: "AI agents continuously scan AEP data quality without requiring manual QA runs or analyst time." },
+    { term: "Anomaly detection", text: "Issues are surfaced before they reach downstream activation — broken segments and bad signals are caught early." },
+    { term: "Recommended fixes", text: "The agent doesn't just flag problems — it recommends corrective actions with context on impact and priority." },
+    { term: "Cross-platform visibility", text: "Diagnostics run across AEP, Snowflake, and Databricks — the whole data layer, not just one system." },
+    { term: "Reduced data debt", text: "Ongoing agentic monitoring prevents the accumulation of unresolved data issues that slow teams down over time." },
+    { term: "Built on App Builder", text: "The diagnostic layer is deployed via Adobe App Builder — extensible, governable, and native to the Adobe ecosystem." }
+  ],
+  "initiative-intelligence": [
+    { term: "Single orchestration layer", text: "Workfront Fusion connects planning, creative, journey execution, and analytics into one coordinated workflow." },
+    { term: "Goals stay in sync", text: "As conditions change, the orchestrator realigns budgets, content, and timelines automatically — no manual intervention." },
+    { term: "Firefly integrated", text: "Creative generation is embedded directly in the workflow — briefs trigger Firefly outputs without leaving the platform." },
+    { term: "AJO as the activator", text: "Journey Optimizer receives campaign signals from Workfront and executes the right experience at the right moment." },
+    { term: "Analytics in the loop", text: "Adobe Analytics data feeds back into the orchestration layer — performance informs the next cycle in real time." },
+    { term: "Built for scale", text: "The same workflow that manages one initiative can govern fifty — the architecture doesn't change, just the inputs." }
+  ],
+  "personalized-media-deployment": [
+    { term: "End-to-end in one stack", text: "Media planning, audience building, creative personalization, and activation all run through Dentsu's connected platform." },
+    { term: "Dentsu Connect as the hub", text: "Connect ties together strategy, audience, and execution tools — eliminating the handoff gaps between teams." },
+    { term: "Clinch for dynamic creative", text: "Clinch handles dynamic creative optimization at the delivery layer — the right version of the ad to the right person." },
+    { term: "AI-assisted planning", text: "Dentsu Audience Builder and Strategy Builder apply AI to media planning before a single dollar is spent." },
+    { term: "AEP as the data foundation", text: "Adobe Experience Platform provides the audience intelligence that powers targeting across the entire media stack." },
+    { term: "Firefly for creative scale", text: "Adobe Firefly generates on-brand creative variants at speed — reducing production time and legal risk simultaneously." }
+  ],
+  "anonymous-intent-detection": [
+    { term: "No login required", text: "Merkury resolves anonymous visitors at the account level — intent is actionable before any form fill." },
+    { term: "Real-time scoring", text: "Intent scoring runs inside AEP the moment a visitor lands — no batch processing, no delay." },
+    { term: "Automatic first touch", text: "AJO B2B or Marketo orchestrates the first marketing action automatically, closing the gap between signal and response." },
+    { term: "Account-level precision", text: "Individual visitors are resolved to company accounts — sales and marketing see the same picture." },
+    { term: "Firefly API in the loop", text: "Personalized creative is generated via Firefly API and served based on the resolved intent profile." },
+    { term: "Built on Merkury Tag", text: "The Merkury tag layer does the identity work — no separate CDP integration or custom instrumentation required." }
+  ],
+  "personalized-buying-group": [
+    { term: "One account, multiple journeys", text: "AJO B2B manages the complexity of multi-role buying groups so marketers don't build separate campaigns per persona." },
+    { term: "Marketo + AJO together", text: "Marketo handles execution, AJO B2B owns the orchestration logic — both platforms work at their strengths." },
+    { term: "Salesforce CRM connected", text: "Opportunity data from Salesforce informs which buying groups get accelerated — sales and marketing share a single signal." },
+    { term: "AI with human in the loop", text: "AI scores, sequences, and generates creative per persona — with a human review step built in so marketers stay in control of what goes out." },
+    { term: "Digitizing the buying committee", text: "For the first time, every member of a buying committee can be identified, mapped, and engaged with a coordinated ABM strategy — at a scale and precision that was never possible before." },
+    { term: "AEP as the profile layer", text: "Every buying group member's behavior and attributes feed into AEP — the orchestration layer draws on live data, not static lists." }
+  ],
+  "account-based-selling": [
+    { term: "Storefront knows the account", text: "The Commerce experience adapts before login — no friction, no generic landing page for known accounts." },
+    { term: "Sales and Commerce in sync", text: "AJO B2B connects CRM opportunity data to the live Commerce experience — reps and buyers are never out of step." },
+    { term: "Self-serve meets assisted", text: "Buyers move at their own pace online; reps are alerted at precisely the right moment to step in." },
+    { term: "360° account connectivity", text: "CRM opportunities and renewals connect directly to real-time front-end experiences — back-office and storefront are one system." },
+    { term: "Marketo Sales Insight", text: "Sales reps see exactly what an account has done on the Commerce site — every page view, product interaction, and intent signal." },
+    { term: "No generic experiences", text: "Pricing, product display, and content all adapt to the specific account — Commerce behaves like a dedicated sales portal." }
+  ],
+  "unified-customer-profile": [
+    { term: "Four systems, one profile", text: "Watch RT-CDP stitch records from four siloed systems into a single customer profile in real time." },
+    { term: "Universal problem", text: "Every brand in this room has this issue — RT-CDP is the resolution, not a workaround or a future-state aspiration." },
+    { term: "Real-time activation", text: "The profile updates the moment a signal fires — activation follows within seconds, not in the next batch cycle." },
+    { term: "Revenue impact", text: "Every siloed record is a missed personalization and a wasted impression. Unification directly recovers that lost value." },
+    { term: "Merkury enrichment", text: "Merkury Tag Manager adds identity resolution before the profile is built — known and unknown visitors both get unified." },
+    { term: "AJO-ready output", text: "The unified profile feeds directly into Adobe Journey Optimizer — no additional mapping or transformation required." }
+  ],
+  "gamification-loyalty": [
+    { term: "Personalized, not broadcast", text: "Every challenge and reward is tailored to the individual — not pushed to a segment or a generic tier." },
+    { term: "Burger King at scale", text: "The examples shown are live reference implementations — this is what the platform looks like running in production." },
+    { term: "Merkury Loyalty+ as the engine", text: "Merkle's own priority solution powers the loyalty mechanics and connects them to the broader technology stack." },
+    { term: "AJO for journey delivery", text: "Adobe Journey Optimizer delivers the gamification touchpoints across email, web, and app in a coordinated sequence." },
+    { term: "AEP for intelligence", text: "Adobe Experience Platform provides the behavioral data that makes each challenge and reward feel relevant, not random." },
+    { term: "Stack-agnostic integration", text: "The loyalty layer connects to your existing website and campaign infrastructure — no full-platform rebuild required." }
+  ],
+  "campaigns-to-conversations": [
+    { term: "Journey-driven logic", text: "Messaging responds to what customers actually do — not just who they are or what list they're on." },
+    { term: "No more batch sends", text: "AJO replaces campaign-centric thinking with always-on journeys that trigger based on real behavior." },
+    { term: "CJA provides the why", text: "Customer Journey Analytics surfaces the reasoning behind engagement patterns — not just open and click rates." },
+    { term: "Firefly for content", text: "Adobe Firefly generates contextually relevant creative variants for each journey stage without manual production." },
+    { term: "Scalable personalization", text: "One journey definition can serve thousands of customers differently — the logic scales, the work doesn't." },
+    { term: "Faster time to market", text: "Removing batch dependencies means campaigns go live in hours, not the days required for traditional blast sends." }
+  ],
+  "adaptive-intelligence": [
+    { term: "Connected attribution", text: "Performance signals are traced back to the exact moments and channels that drove conversion — not last-click." },
+    { term: "Continuous optimization", text: "Spend and creative decisions update based on live performance data — no waiting for the end-of-month report." },
+    { term: "CJA as the source of truth", text: "Customer Journey Analytics provides the cross-channel view that makes attribution trustworthy and actionable." },
+    { term: "AEP powers the model", text: "Adobe Experience Platform feeds the behavioral data that keeps the attribution model current as audience behavior shifts." },
+    { term: "Reduces wasted spend", text: "Budget gets reallocated away from underperforming placements automatically — efficiency improves without manual intervention." },
+    { term: "Connects to planning", text: "Insights flow back into media and creative planning — every campaign makes the next one more informed." }
+  ],
+  "genstudio-dentsu": [
+    { term: "One integrated workspace", text: "Creative production, AI content, audience targeting, and campaign execution run in a single coordinated workflow." },
+    { term: "Firefly at scale", text: "On-brand visual variants are generated commercially safely, brand-governed, and ready for review inside the same platform." },
+    { term: "Audiences meet creative", text: "Targeting segments are linked directly to creative variants — the right asset is matched to the right audience automatically." },
+    { term: "No handoff friction", text: "Campaign delivery flows directly from GenStudio to trafficking — no spreadsheets, no file transfers, no version confusion." },
+    { term: "Performance feeds back in", text: "Live campaign data returns to GenStudio and informs the next production cycle — the system gets smarter over time." },
+    { term: "A flywheel, not a tool", text: "Every campaign makes the next one more informed. GenStudio Dentsu+ is the operating system for creative, targeting, and execution." }
+  ],
+  "aem-migration-agent": [
+    { term: "AI-guided end-to-end", text: "Section selection, field mapping, template assignment, and deployment to dev — no manual orchestration at any step." },
+    { term: "Content enrichment built in", text: "Every migrated page gets AI-generated meta, schema markup, author signals, and 301 redirects applied automatically." },
+    { term: "Measurable SEO lift", text: "Migration is projected to move SEO score from 52 to 84 and LLM visibility from 22 to 79, with new keywords auto-identified." },
+    { term: "Parallel workstreams", text: "Page Builder, Copy Creator, Firefly, and AEM Assets run alongside migration — creative work and technical migration happen together." },
+    { term: "Live progress view", text: "The dashboard shows migration progress by section, optimization scores, and a go-live Gantt in a single stakeholder view." },
+    { term: "Multi-brand architecture", text: "One AEM platform governs the main site, campaigns, and microsites under a unified Active Experience model." }
+  ],
+  "brand-intelligence-agent": [
+    { term: "Brand setup automated", text: "AI scrapes the organization's website and brand docs to extract palette, fonts, voice, personas, and campaigns — fully pre-populated." },
+    { term: "One source of truth", text: "A single brand kit publishes to Journey Optimizer, Marketo, GenStudio, Express, Creative Cloud, Workfront, and Firefly simultaneously." },
+    { term: "Eliminates repetition", text: "Brand setup today is manual and repeated across every tool. This does that work once and syncs it everywhere." },
+    { term: "Prototype with real tools", text: "This is a working prototype built on tools that exist today — not a concept. The integration points are live and testable." },
+    { term: "Governance at the source", text: "Brand standards are enforced at the kit level — downstream tools pull from the same governed definitions automatically." },
+    { term: "Reduces brand drift", text: "When brand setup lives in one place and pushes everywhere, off-brand executions become structurally harder to produce." }
+  ],
+  "genstudio-content-continuum": [
+    { term: "Full supply chain on one screen", text: "Seeing the entire content pipeline from brief to performance in a single view is something most teams have never experienced." },
+    { term: "Fusion eliminates handoffs", text: "Workfront Fusion automates the transitions between tools — no more work getting lost, delayed, or duplicated in the gaps." },
+    { term: "Live, not hypothetical", text: "This is a working configuration of tools that exist today — not a vision or a roadmap item." },
+    { term: "AJO closes the loop", text: "Adobe Journey Optimizer connects content output to actual delivery — performance data flows back into the planning cycle." },
+    { term: "Planning to activation", text: "From Workfront Planning through production to AEM and GenStudio — every stage is connected and trackable." },
+    { term: "Compounding efficiency", text: "Each cycle through the continuum produces better briefs, faster production, and more relevant content — the system improves itself." }
+  ],
+  "initiative-orchestrator": [
+    { term: "Campaign coordination at scale", text: "Workfront connects planning, creative, and execution into one orchestrated workflow — no tool switching, no lost context." },
+    { term: "Budgets stay aligned", text: "As priorities shift, the orchestrator realigns spend and resource allocation automatically across active initiatives." },
+    { term: "AJO as the activator", text: "Journey Optimizer receives the campaign signal from Workfront and executes the right experience at the right moment." },
+    { term: "Fusion as the backbone", text: "Workfront Fusion handles the automation between tools — approvals, asset handoffs, and status updates run without manual effort." },
+    { term: "Analytics closes the loop", text: "Adobe Analytics data feeds performance back into the planning layer — the next initiative starts with real signal, not assumptions." },
+    { term: "Figma to production", text: "Design work in Figma connects directly to the workflow — creative review and approval happen in the same system as execution." }
+  ],
+  "post-sale-expansion": [
+    { term: "Detect gaps early", text: "AI models identify adoption gaps before they become churn signals — expansion conversations happen at the right time." },
+    { term: "Automated upsell journeys", text: "AJO B2B triggers expansion sequences based on product usage and account health data — not manual rep judgment." },
+    { term: "CRM-connected signals", text: "Salesforce opportunity data informs which accounts are ready for expansion and which need attention first." },
+    { term: "Marketo for nurture", text: "Marketo executes the post-sale nurture tracks that keep customers engaged between renewal cycles." },
+    { term: "Firefly for relevance", text: "Expansion creative is generated and personalized via Firefly API — the right message for the right product moment." },
+    { term: "AEP as the data layer", text: "Adobe Experience Platform unifies product usage, behavioral, and CRM data into the profile that drives every expansion decision." }
+  ],
+  "schemaiq-aep": [
+    { term: "Full data inventory", text: "A complete, digestible view of everything inside your AEP instance — schemas, datasets, and field definitions in one place." },
+    { term: "Automated data dictionary", text: "Field definitions, data types, and lineage are generated automatically — no manual documentation effort required." },
+    { term: "Schema planning and alignment", text: "Gaps and misalignments across schemas are identified before they cause downstream activation failures." },
+    { term: "Faster onboarding", text: "New team members and partners can understand the full data model in hours rather than weeks of tribal knowledge transfer." },
+    { term: "Proactive governance", text: "Data quality issues and compliance gaps are surfaced before they reach activation — not after campaigns have already run." },
+    { term: "AEP acceleration", text: "Teams spend less time wrangling schemas and more time building audiences, activating journeys, and driving outcomes." }
+  ]
+};
+
+
+function renderCategoryPage(catId) {
+  const cat = CATEGORIES[catId];
+  const hero = cat.demos[0];
+  const hero2Demos = cat.demos.filter(d => d.hero2 && !d.hidden);
+  const gridDemos = cat.demos.slice(1).filter(d => !d.hero2 && !d.hidden);
+  document.getElementById('cat-content').innerHTML = `
+    <button class="back-btn" onclick="showPage('home')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><polyline points="15,18 9,12 15,6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Dentsu + Adobe
+    </button>
+    <h1 class="cat-page-title">
+      <span style="color:#fff">${cat.titleWord1}</span><span class="${cat.textClass}">${cat.titleRest}</span>
+    </h1>
+    <div class="hero-card ${cat.gradient}" onclick="showPage('detail','${catId}','${hero.id}')">
+      <div class="hero-card-bg">${HERO_BGS[catId] || ''}</div>
+      <div class="live-badge" style="position:relative;z-index:2"><div class="live-dot"></div>Live Demo</div>
+      <div class="hero-title" style="position:relative;z-index:2">${hero.title}</div>
+      <div class="hero-desc" style="position:relative;z-index:2">${hero.desc}</div>
+      <button class="init-btn" style="position:relative;z-index:2" onclick="event.stopPropagation();showPage('detail','${catId}','${hero.id}')">Initialize Demo</button>
+    </div>
+    <div class="demos-grid">
+      ${gridDemos.map(d => `
+        <div class="demo-card" onclick="showPage('detail','${catId}','${d.id}')">
+          ${d.live ? `<div class="live-badge" style="margin-bottom:12px"><div class="live-dot"></div>Live Demo</div>` : ''}
+          <div class="demo-card-title">${d.title}</div>
+          <div class="demo-card-desc">${d.desc}</div>
+          <div class="launch-link">Launch Demo <span style="font-size:16px;line-height:1">→</span></div>
+        </div>`).join('')}
+    </div>
+    ${hero2Demos.map(d => `
+    <div class="hero-card ${cat.gradient}" style="margin-top:24px" onclick="showPage('detail','${catId}','${d.id}')">
+      <div class="hero-card-bg">${HERO_BGS[catId] || ''}</div>
+      <div class="hero-title" style="position:relative;z-index:2">${d.title}</div>
+      <div class="hero-desc" style="position:relative;z-index:2">${d.desc}</div>
+      <button class="init-btn" style="position:relative;z-index:2" onclick="event.stopPropagation();showPage('detail','${catId}','${d.id}')">Initialize Demo</button>
+    </div>`).join('')}`;
+}
+
+function renderDetailPage(catId, demoId) {
+  const cat = CATEGORIES[catId];
+  const demo = cat.demos.find(d => d.id === demoId);
+  document.getElementById('detail-content').innerHTML = `
+    <div class="breadcrumb">
+      <button class="breadcrumb-btn" onclick="showPage('cat','${catId}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><polyline points="15,18 9,12 15,6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Dentsu + Adobe
+      </button>
+      <div class="breadcrumb-sep"></div>
+      <div class="breadcrumb-cat">${cat.title.toUpperCase()}</div>
+    </div>
+    <h1 class="detail-title"><span class="${cat.textClass}">${demo.title}.</span></h1>
+    <p class="detail-desc">${demo.desc}</p>
+    <div class="video-wrap">
+      <iframe src="${demo.videoUrl || VIDEO_URL}" allow="autoplay" allowfullscreen></iframe>
+    </div>
+    <div class="powered-label">Powered By</div>
+    <div class="tech-tags">
+      ${demo.techs.map(t => `
+        <div class="tech-tag${isAdobe(t) ? ' adobe' : ''}">
+          <span>${t}</span>
+        </div>`).join('')}
+    </div>
+    ${DEMO_CONTEXT[demoId] ? `
+    <div class="demo-context">
+      <div class="demo-context-text"><em>Best for: ${DEMO_CONTEXT[demoId].audience}</em>${DEMO_CONTEXT[demoId].blurb}</div>
+    </div>` : ''}
+    ${TAKEAWAYS[demoId] ? `
+    <div class="takeaways-section">
+      <div class="takeaways-label">Key Takeaways</div>
+      <div class="takeaways-grid">
+        ${TAKEAWAYS[demoId].map(t => `
+          <div class="takeaway-item">
+            <div class="takeaway-bullet"></div>
+            <div class="takeaway-text"><strong>${t.term}:</strong> ${t.text}</div>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}`;
+}
+
+function openForm() { document.getElementById('form-overlay').classList.add('open'); }
+function closeForm() { document.getElementById('form-overlay').classList.remove('open'); }
+function closeFormOutside(e) { if (e.target === document.getElementById('form-overlay')) closeForm(); }
+function submitForm() { alert("Thank you! We'll be in touch soon."); closeForm(); }
+</script>
+</body>
+</html>
