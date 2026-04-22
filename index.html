@@ -296,6 +296,109 @@
   }
   .tech-tag.adobe { border: 1px solid rgba(235,50,35,0.55); color: #fff; }
 
+  /* ---- DENTSU DIFF MODAL ---- */
+  .ddiff-overlay {
+    position: fixed; inset: 0; z-index: 700;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    display: none; align-items: center; justify-content: center;
+    padding: 40px;
+  }
+  .ddiff-overlay.open { display: flex; }
+  .ddiff-modal {
+    width: 100%; max-width: 780px;
+    max-height: 88vh;
+    background: #141414;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px;
+    overflow-y: auto;
+    padding: 40px 40px 36px;
+    position: relative;
+    animation: slideIn 0.3s cubic-bezier(0.22,1,0.36,1);
+  }
+  .ddiff-pill {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 8px 18px; border-radius: 999px; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05); color: #888;
+    transition: all 0.2s;
+  }
+  .ddiff-pill:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.3); }
+  .ddiff-pill.active { background: rgba(0,214,233,0.12); border-color: rgba(0,214,233,0.4); color: #00d6e9; }
+
+  .ddiff-close {
+    position: absolute; top: 16px; right: 18px;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%; width: 30px; height: 30px;
+    color: #888; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .ddiff-close:hover { background: rgba(255,255,255,0.13); color: #fff; }
+  .ddiff-eyebrow {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+    font-weight: 600; margin-bottom: 10px;
+  }
+  .ddiff-title {
+    font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #fff;
+    line-height: 1.2; margin-bottom: 20px; padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .ddiff-body { font-size: 14px; color: #999; line-height: 1.75; margin-bottom: 28px; }
+  .ddiff-body strong { color: #ddd; font-weight: 700; }
+  .ddiff-section-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 600; color: #555; margin-bottom: 8px; margin-top: 28px;
+  }
+  .ddiff-section-label:first-of-type { margin-top: 0; }
+  .ddiff-clients-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;
+  }
+  .ddiff-client-pill {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 14px 18px;
+    font-size: 15px; font-weight: 700; color: #e8e8e8;
+  }
+  .ddiff-clients-footer {
+    font-size: 13px; color: #666; line-height: 1.7; margin-top: 14px;
+  }
+  .ddiff-stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px;
+  }
+  .ddiff-stat-card {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(166,140,255,0.2);
+    border-radius: 12px; padding: 18px 20px;
+  }
+  .ddiff-stat-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 600; color: #A68CFF; margin-bottom: 8px;
+  }
+  .ddiff-stat-headline { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+  .ddiff-stat-body { font-size: 12px; color: #666; line-height: 1.6; }
+  .ddiff-diff-item { display: flex; gap: 14px; margin-bottom: 20px; align-items: flex-start; }
+  .ddiff-diff-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 600; color: #555; margin-bottom: 6px;
+  }
+  .ddiff-diff-body { font-size: 13px; color: #999; line-height: 1.7; }
+  .ddiff-diff-body strong { color: #ddd; font-weight: 700; display: block; margin-bottom: 3px; }
+  .ddiff-better-box {
+    background: rgba(251,44,54,0.07); border: 1px solid rgba(251,44,54,0.25);
+    border-radius: 12px; padding: 20px 22px; margin-bottom: 8px;
+  }
+  .ddiff-better-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 600; color: #fb2c36; margin-bottom: 8px;
+  }
+  .ddiff-better-body { font-size: 14px; color: #ccc; line-height: 1.75; }
+  .ddiff-better-body strong { color: #fff; }
+
   /* ---- IWO MODAL ---- */
   .iwo-overlay {
     position: fixed; inset: 0; z-index: 600;
@@ -430,6 +533,12 @@
     </div>
     <span class="nav-label">IWO</span>
   </button>
+  <button class="nav-item" onclick="openDentsuDiff()" id="nav-dentsu-diff">
+    <div class="nav-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <span class="nav-label" style="font-size:8px;letter-spacing:1px">DIFF</span>
+  </button>
 </nav>
 
 <!-- GLOBAL HEADER -->
@@ -559,7 +668,7 @@
           <option>AEM Migration Agent</option>
           <option>Firefly Prompt Engineering</option>
           <option>GenStudio Content Continuum</option>
-          <option>Brand Intelligence Agent</option>
+          <option>Brand Builder Agent</option>
         </optgroup>
       </select>
     </div>
@@ -574,6 +683,106 @@
     </div>
     <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" placeholder="Additional notes..." rows="3"></textarea></div>
     <button class="submit-btn" onclick="submitForm()">Submit</button>
+  </div>
+</div>
+
+<!-- DENTSU DIFFERENCE MODAL -->
+<div class="ddiff-overlay" id="ddiff-overlay" onclick="closeDentsuDiffOutside(event)">
+  <div class="ddiff-modal">
+    <button class="ddiff-close" onclick="closeDentsuDiff()">&#x2715;</button>
+
+    <!-- WHO WE ARE -->
+    <div class="ddiff-eyebrow" style="color:#00d6e9">Who We Are</div>
+    <div class="ddiff-title">We Are Practitioners, Not Consultants.</div>
+    <div style="font-size:16px;color:#c8c6c6;line-height:1.8;margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.07);">
+      Not a consultancy. Not a reseller. And unlike the firms that win the pitch and farm the work out — <strong style="color:#fff;">we run marketing, CRM, DX, and martech infrastructure for the world's most demanding brands ourselves.</strong>
+      <br><br>
+      As one of Adobe's Diamond Partners, we work directly with Adobe's product and executive teams to bring our clients' transformation to life. Not a theory — an action. Data, media, technology, and creative operating as one integrated practice to best serve today's leading brands at a global level.
+    </div>
+
+    <div class="ddiff-stats-grid" style="margin-bottom:28px;">
+      <div class="ddiff-stat-card">
+        <div class="ddiff-stat-label">CSC Partner</div>
+        <div class="ddiff-stat-headline">1 of 2 Global</div>
+        <div class="ddiff-stat-body">Adobe's Creative, Scaled Production &amp; MarTech AOR worldwide</div>
+      </div>
+      <div class="ddiff-stat-card">
+        <div class="ddiff-stat-label">Platinum Status</div>
+        <div class="ddiff-stat-headline">1 of 4 Worldwide</div>
+        <div class="ddiff-stat-body">Platinum for AJO, CJA &amp; RT-CDP — out of 750 partners globally</div>
+      </div>
+      <div class="ddiff-stat-card">
+        <div class="ddiff-stat-label">Data Foundation</div>
+        <div class="ddiff-stat-headline">1.4B+ Profiles</div>
+        <div class="ddiff-stat-body">Merkury covers 98% of the US population</div>
+      </div>
+      <div class="ddiff-stat-card">
+        <div class="ddiff-stat-label">Unique Capability</div>
+        <div class="ddiff-stat-headline">Media + CXM</div>
+        <div class="ddiff-stat-body">The only partner unifying media buying and CX transformation in one practice</div>
+      </div>
+    </div>
+
+    <!-- SECTION PILLS -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
+      <button class="ddiff-pill active" onclick="showDdiffSection('why', this)">Why We Win</button>
+      <button class="ddiff-pill" onclick="showDdiffSection('clients', this)">Our Clients</button>
+      <button class="ddiff-pill" onclick="showDdiffSection('diff', this)">Our Differentiator</button>
+    </div>
+
+    <!-- WHY WE WIN -->
+    <div id="ddiff-why" class="ddiff-section-content">
+      <div class="ddiff-better-box">
+        <div class="ddiff-better-label">vs. Accenture, Deloitte, HUGE &amp; the rest</div>
+        <div class="ddiff-better-body">They diagnose and hand over a deck. <strong>We don't separate the thinking from the making.</strong> We're the only partner combining 1.4B+ data profiles, full-funnel media, enterprise Adobe delivery, and premier creative — not as siloed practices, but as one operating system. We don't recommend the stack. We run it.</div>
+      </div>
+    </div>
+
+    <!-- CLIENT PORTFOLIO -->
+    <div id="ddiff-clients" class="ddiff-section-content" style="display:none;">
+      <div class="ddiff-clients-grid">
+        <div class="ddiff-client-pill">Hilton</div>
+        <div class="ddiff-client-pill">Highmark Health</div>
+        <div class="ddiff-client-pill">T-Mobile</div>
+        <div class="ddiff-client-pill">Lumen Technologies</div>
+        <div class="ddiff-client-pill">Princess Cruises</div>
+        <div class="ddiff-client-pill">Novo Nordisk</div>
+        <div class="ddiff-client-pill">Vanguard</div>
+        <div class="ddiff-client-pill">Ulta Beauty</div>
+        <div class="ddiff-client-pill">Marriott</div>
+        <div class="ddiff-client-pill">American Express</div>
+      </div>
+      <div class="ddiff-clients-footer" style="margin-top:14px;">Full-scale, production deployments — not pilots. From B2C loyalty to B2B growth to regulated industries, running the stack together.</div>
+    </div>
+
+    <!-- OUR DIFFERENTIATOR -->
+    <div id="ddiff-diff" class="ddiff-section-content" style="display:none;">
+      <div class="ddiff-diff-item">
+        <div style="flex:1">
+          <div class="ddiff-diff-label">In The Business</div>
+          <div class="ddiff-diff-body"><strong>We're on the line every day.</strong> Running the tools, not just recommending them.</div>
+        </div>
+      </div>
+      <div class="ddiff-diff-item">
+        <div style="flex:1">
+          <div class="ddiff-diff-label">On The Business</div>
+          <div class="ddiff-diff-body"><strong>Strategy and execution in the same room.</strong> Not a handoff — one operating system.</div>
+        </div>
+      </div>
+      <div class="ddiff-diff-item">
+        <div style="flex:1">
+          <div class="ddiff-diff-label">We Architect The Decisions</div>
+          <div class="ddiff-diff-body"><strong>We build feedback loops that compound.</strong> Insights flow from performance to brief to creative — every cycle gets smarter.</div>
+        </div>
+      </div>
+      <div class="ddiff-diff-item">
+        <div style="flex:1">
+          <div class="ddiff-diff-label">We Prove It With Adobe</div>
+          <div class="ddiff-diff-body"><strong>We are Adobe's creative agency.</strong> GenStudio Dentsu+ is how we run it ourselves — we know firsthand how hard it is, and how to make it work.</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -648,10 +857,11 @@ const CATEGORIES = {
     demos: [
       { id: "experience-concierge", title: "Experience Concierge", live: true,
         desc: "Deploys an AI-orchestrated layer across digital touchpoints that personalizes every interaction in real time, without human intervention.",
+        videoUrl: "https://www.youtube.com/embed/cocnKa06Wo4",
         techs: ["Brand Concierge","Custom AI Model","Adobe App Builder","AEM Assets","AEM Sites","Adobe Experience Platform","Merkury Tag Management"] },
       { id: "aem-migration-agent", title: "AEM Migration Agent",
         desc: "Automates the heavy lifting of AEM content migration, reducing manual effort and risk while preserving content structure and metadata integrity.",
-        videoUrl: "https://drive.google.com/file/d/1zPYf5OgbY6BxCyKV1RVMp292eTS5YaO0/preview",
+        videoUrl: "https://www.youtube.com/embed/mQYs8hmmHeY",
         techs: ["AEM Sites","AEM EDS","AEM Assets","Custom AI Models","Firefly API","Adobe App Builder","Workfront Workflow"] },
       { id: "schemaiq-aep", title: "SchemaIQ for AEP",
         desc: "Accelerates AEP data readiness by intelligently mapping, validating, and governing schemas so teams spend less time wrangling data and more time activating it.",
@@ -675,9 +885,9 @@ const CATEGORIES = {
         desc: "Connects content planning, production, and performance in a closed loop so every asset informs the next brief.",
         videoUrl: "https://www.youtube.com/embed/j72fCFBC-XE",
         techs: ["GenStudio for Performance Marketing","AEM Assets","Adobe Firefly","Adobe Express","Workfront Workflow","Adobe Journey Optimizer","Workfront Planning","Workfront Fusion"] },
-      { id: "brand-intelligence-agent", title: "Brand Intelligence Agent",
+      { id: "brand-intelligence-agent", title: "Brand Builder Agent",
         desc: "Monitors content output across channels and flags brand inconsistencies before they ship, keeping creative execution aligned to brand standards at scale.",
-        videoUrl: "https://drive.google.com/file/d/1a7u7ovfXltx7tY-rK5Phfx3katKCkufE/preview",
+        videoUrl: "https://www.youtube.com/embed/ktgKda9p7Zk",
         techs: ["Adobe Express","Adobe Journey Optimizer","Adobe App Builder","AEM Assets","Workfront","Creative Cloud","Adobe Firefly","Custom AI Modeling","GenStudio for Performance Marketing"] },
       { id: "initiative-orchestrator", title: "Initiative Orchestrator",
         desc: "Coordinates AI agents across campaign initiatives to ensure goals, budgets, and content stay aligned as conditions change.",
@@ -969,6 +1179,7 @@ function renderCategoryPage(catId) {
 function renderDetailPage(catId, demoId) {
   const cat = CATEGORIES[catId];
   const demo = cat.demos.find(d => d.id === demoId);
+  const gameCenterHTML = demoId === "gamification-loyalty" ? '<div style="margin-bottom:48px;border-radius:12px;overflow:hidden;"><img src="' + GAME_CENTER_IMG + '" style="width:100%;display:block;" alt="Game Center" /></div>' : '';
   document.getElementById('detail-content').innerHTML = `
     <div class="breadcrumb">
       <button class="breadcrumb-btn" onclick="showPage('cat','${catId}')">
@@ -983,7 +1194,7 @@ function renderDetailPage(catId, demoId) {
     <div class="video-wrap">
       <iframe src="${demo.videoUrl || VIDEO_URL}" allow="autoplay" allowfullscreen></iframe>
     </div>
-    ${demoId === "gamification-loyalty" ? `<div style="margin-bottom:48px;border-radius:12px;overflow:hidden;"><img src="${GAME_CENTER_IMG}" style="width:100%;display:block;" alt="Game Center" /></div>` : ''}
+    ${gameCenterHTML}
     <div class="powered-label">Powered By</div>
     <div class="tech-tags">
       ${demo.techs.map(t => `
@@ -1008,6 +1219,15 @@ function renderDetailPage(catId, demoId) {
     </div>` : ''}`;
 }
 
+function showDdiffSection(id, btn) {
+  document.querySelectorAll('.ddiff-section-content').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.ddiff-pill').forEach(el => el.classList.remove('active'));
+  document.getElementById('ddiff-' + id).style.display = 'block';
+  btn.classList.add('active');
+}
+function openDentsuDiff() { document.getElementById('ddiff-overlay').classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeDentsuDiff() { document.getElementById('ddiff-overlay').classList.remove('open'); document.body.style.overflow = ''; }
+function closeDentsuDiffOutside(e) { if (e.target === document.getElementById('ddiff-overlay')) closeDentsuDiff(); }
 function openIWO() { document.getElementById('iwo-overlay').classList.add('open'); }
 function closeIWO() { document.getElementById('iwo-overlay').classList.remove('open'); }
 function closeIWOOutside(e) { if (e.target === document.getElementById('iwo-overlay')) closeIWO(); }
